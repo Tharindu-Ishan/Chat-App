@@ -3,12 +3,12 @@ package lk.ijse.dep11.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.util.Callback;
 import lk.ijse.dep11.Dep11Headers;
 import lk.ijse.dep11.Dep11Message;
 
@@ -36,6 +36,27 @@ public class ChatLoginViewController {
 
     public void initialize(){
         connect();
+        readServerResponse();
+        Platform.runLater(()-> closeSocketOnStageCloseRequest() );
+        lstUsers.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> stringListView) {
+                return new ListCell<>(){
+                    @Override
+                    protected void updateItem(String text, boolean empty) {
+                        super.updateItem(text, empty);
+                        if(!empty){
+                            setGraphic(new Circle(5, Color.LIMEGREEN));
+                            setGraphicTextGap(7.5);
+                            setText(text);
+                        }else {
+                            setGraphic(null);
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
 
     }
     private void connect(){
@@ -83,13 +104,35 @@ public class ChatLoginViewController {
             }
         }).start();
     }
+    private void closeSocketOnStageCloseRequest(){
+        txtMsg.getScene().getWindow().setOnCloseRequest(windowEvent -> {
+            try {
+                oos.writeObject(new Dep11Message(Dep11Headers.EXIT,null));
+                oos.flush();
+                if(!socket.isClosed()) socket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+    }
     @FXML
     void imgSendOnMouseClicked(MouseEvent event) {
+        txtMsg.fireEvent(new ActionEvent());
 
     }
 
     @FXML
     void txtMsgOnAction(ActionEvent event) {
+        try {
+            Dep11Message msg = new Dep11Message(Dep11Headers.MSG, txtMsg.getText());
+            oos.writeObject(msg);
+            oos.flush();
+            txtMsg.clear();
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR,"Failed to connect to the server,try again").show();
+            e.printStackTrace();
+        }
 
     }
 
