@@ -61,7 +61,7 @@ public class ChatLoginViewController {
     }
     private void connect(){
         try {
-            socket = new Socket("172.20.10.10", 5050);
+            socket = new Socket("192.168.8.105", 5050);
             OutputStream os = socket.getOutputStream();
             oos = new ObjectOutputStream(os);
             oos.flush();
