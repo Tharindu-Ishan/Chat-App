@@ -8,15 +8,15 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="419.0" prefWidth="676.0" stylesheets="@../css/ChatSceneStyles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.controller.ChatLoginViewController">
+<AnchorPane prefHeight="419.0" prefWidth="676.0" stylesheets="@../css/ChatSceneStyles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.controller.ChatViewController">
    <children>
       <Label prefHeight="50.0" prefWidth="646.0" text="DEP-11 Group" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="15.0" />
-      <ListView fx:id="lstUsers" layoutX="452.0" layoutY="14.0" prefHeight="386.0" prefWidth="168.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="50.0" />
+      <ListView fx:id="lstUsers" layoutX="452.0" layoutY="14.0" prefHeight="354.0" prefWidth="180.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="50.0" />
       <TextField fx:id="txtMsg" layoutX="14.0" layoutY="365.0" onAction="#txtMsgOnAction" prefHeight="38.0" prefWidth="463.0" promptText="Type something . . ." AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="198.0" />
-      <TextArea fx:id="txtChatHistory" editable="false" layoutX="14.0" layoutY="15.0" prefHeight="339.0" prefWidth="463.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="198.0" AnchorPane.topAnchor="50.0" />
+      <TextArea fx:id="txtChatHistory" editable="false" layoutX="14.0" layoutY="15.0" prefHeight="314.0" prefWidth="463.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="198.0" AnchorPane.topAnchor="50.0" />
       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="40.0">
          <image>
-            <Image url="@../icon/dp.png" />
+            <Image url="@../icon/img.png" />
          </image>
       </ImageView>
       <ImageView fx:id="imgSend" fitHeight="23.0" fitWidth="23.0" layoutX="445.0" layoutY="373.0" onMouseClicked="#imgSendOnMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="208.0">

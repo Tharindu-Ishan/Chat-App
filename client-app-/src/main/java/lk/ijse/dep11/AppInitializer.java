@@ -16,11 +16,11 @@ public class AppInitializer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/scene/ChatScene.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/scene/LoginScene.fxml"));
         AnchorPane root = fxmlLoader.load();
         Scene chatScene = new Scene(root);
         primaryStage.setScene(chatScene);
-        primaryStage.setTitle("Chat App");
+        primaryStage.setTitle("Login to Chat App");
         primaryStage.show();
         primaryStage.centerOnScreen();
 

@@ -1,11 +1,9 @@
 package lk.ijse.dep11;
 
+import lk.ijse.dep11.controller.LoginSceneController;
 import lk.ijse.dep11.users.User;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,17 +11,24 @@ import java.util.ArrayList;
 public class ServerAppInitializer {
     private  static  volatile ArrayList<User> userList=new ArrayList<>();
     private static volatile String chatHistory="";
+    private static UserName username;
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         ServerSocket serverSocket = new ServerSocket(5050);
         System.out.println("Server is listening");
 
         while (true){
             System.out.println("Waiting for an incoming connection");
             Socket localSocket = serverSocket.accept();
-            User user = new User(localSocket);
+            InputStream is = localSocket.getInputStream();
+            ObjectInputStream ois2 = new ObjectInputStream(is);
+            username = (UserName)ois2.readObject();
+
+
+            User user = new User(localSocket,username);
             userList.add(user);
-            System.out.println("New connection" +user.getRemoteIpAddress());
+            System.out.println("New connection "+user.getRemoteIpAddress() );
             new Thread(()->{
                 try{
                   sendChatHistory(user);
@@ -32,7 +37,7 @@ public class ServerAppInitializer {
                     while (true){
                         Dep11Message msg = (Dep11Message) ois.readObject();
                         if(msg.getHeader()==Dep11Headers.MSG){
-                            chatHistory+=String.format("%s: %s\n",user.getRemoteIpAddress(),msg.getBody());
+                            chatHistory+=String.format("%s: %s\n",user.getUserName().username,msg.getBody());
                             broadcastChatHistory();
                         } else if (msg.getHeader()==Dep11Headers.EXIT) {
                             removeUser(user);
@@ -53,21 +58,25 @@ public class ServerAppInitializer {
         }
     }
     private static void sendChatHistory(User user) throws IOException {
+
         ObjectOutputStream oos = user.getObjectOutputStream();
         Dep11Message msg = new Dep11Message(Dep11Headers.MSG, chatHistory);
         oos.writeObject(msg);
         oos.flush();
     }
     private static void broadcastLoggedUsers(){
+
         ArrayList<String> ipAddressList = new ArrayList<>();
+        ArrayList<String> userNameList = new ArrayList<>();
         for (User user : userList) {
-            ipAddressList.add(user.getRemoteIpAddress());
+            ipAddressList.add(user.getRemoteIpAddress()); //getRemote
+            userNameList.add(user.getUserName().username);
         }
         for (User user : userList) {
             new Thread(()->{
                 try {
                     ObjectOutputStream oos = user.getObjectOutputStream();
-                    Dep11Message msg = new Dep11Message(Dep11Headers.USERS, ipAddressList);
+                    Dep11Message msg = new Dep11Message(Dep11Headers.USERS, userNameList);
                     oos.writeObject(msg);
                     oos.flush();
                 } catch (IOException e) {
@@ -77,6 +86,8 @@ public class ServerAppInitializer {
         }
     }
     private static void broadcastChatHistory(){
+
+
         for (User user : userList) {
             new Thread(()->{
                 try {
@@ -92,6 +103,8 @@ public class ServerAppInitializer {
         }
     }
     private static void removeUser(User user){
+
+
         if(userList.contains(user)){
             userList.remove(user);
             broadcastLoggedUsers();

@@ -1,5 +1,6 @@
 package lk.ijse.dep11.users;
 
+import lk.ijse.dep11.UserName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,11 +43,16 @@ import java.net.Socket;
 
 public class User {
     private Socket localSocket;
+    private UserName userName;
+
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
-    public User(Socket localSocket) throws IOException {
+    public User(Socket localSocket,UserName userName) throws IOException {
         this.localSocket = localSocket;
+        this.userName=userName;
+
+
 
         /* Before we start to read from the ObjectInputStream from the client side
          * we need to setup the ObjectOutputStream first from the server side.
@@ -55,9 +61,12 @@ public class User {
         objectOutputStream.flush();
     }
 
+
+
     public Socket getLocalSocket() {
         return localSocket;
     }
+    public UserName getUserName(){return userName;}
 
     public ObjectOutputStream getObjectOutputStream() {
         return objectOutputStream;

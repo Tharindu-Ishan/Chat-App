@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Dep11Message implements Serializable {
     private Dep11Headers header;
     private Object body;
+
     private static final long serialVersionUID=1L;
 
 }

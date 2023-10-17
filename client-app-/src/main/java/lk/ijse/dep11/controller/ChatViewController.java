@@ -11,12 +11,13 @@ import javafx.scene.shape.Circle;
 import javafx.util.Callback;
 import lk.ijse.dep11.Dep11Headers;
 import lk.ijse.dep11.Dep11Message;
+import lk.ijse.dep11.UserName;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ChatLoginViewController {
+public class ChatViewController {
 
     @FXML
     private ImageView imgSend;
@@ -63,6 +64,12 @@ public class ChatLoginViewController {
         try {
             socket = new Socket("192.168.8.105", 5050);
             OutputStream os = socket.getOutputStream();
+            OutputStream os2 = socket.getOutputStream();
+            ObjectOutputStream oos2 = new ObjectOutputStream(os2);
+            oos2.writeObject(UserName.name);
+
+
+
             oos = new ObjectOutputStream(os);
             oos.flush();
         } catch (IOException e) {
@@ -80,10 +87,11 @@ public class ChatLoginViewController {
                 while (true){
                     Dep11Message msg = (Dep11Message)ois.readObject();
                     if(msg.getHeader()== Dep11Headers.USERS){
-                        ArrayList<String> ipAddressList=(ArrayList<String>)msg.getBody();
+                        ArrayList<String> usernameList=(ArrayList<String>)msg.getBody();
                         Platform.runLater(()->{
                             lstUsers.getItems().clear();
-                            lstUsers.getItems().addAll(ipAddressList);
+                            lstUsers.getItems().addAll(usernameList);
+                            System.out.println(usernameList);
                         });
                     } else if (msg.getHeader()==Dep11Headers.MSG) {
                         Platform.runLater(()->{
